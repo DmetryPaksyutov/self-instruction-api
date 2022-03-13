@@ -13,7 +13,7 @@ module.exports = {
                 course.description = courses[i].description;
                 course.img = courses[i].img;
                 course.name =  courses[i].name;
-                course.progress = setProgress(course.id);
+                course.percent = setProgress(course.id);
                 returnCourses = [...returnCourses, course];
             }
             return returnCourses;
@@ -24,15 +24,17 @@ module.exports = {
     },
 
     setProgress(userCourses) {
-        return (id) => {
-            let myCourse = false;
-            if (userCourses && userCourses.length) myCourse = userCourses.find((courseItem) => {
-                if (courseItem[underscoreId] == id) {
-                    return true
-                }
-            });
-            if (myCourse) return myCourse.progress;
+        return (idCourse) => {
+            let myCourse;
+            if (userCourses[idCourse]) myCourse = userCourses[idCourse];
+            if (myCourse) return myCourse.percent;
             return 0;
         }
+    },
+
+    async getNameCourse (id) {
+        const course = await CoursesRepository.getCourse(id);
+        const name = course.name;
+        return name;
     }
 }

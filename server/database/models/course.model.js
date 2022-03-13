@@ -6,6 +6,7 @@ const CourseSchema = new Schema({
     img : String,
     description : { type: String, require: true},
     category : String,
+    numberExercises : Number,
 
 }, { versionKey: false });
 

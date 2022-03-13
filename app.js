@@ -23,7 +23,8 @@ applyPassportStrategy(passport);
 app.use('/api/auth', Routers.AuthRouter);
 app.use('/api/courses', Routers.CoursesRouter);
 app.use('/api/lessons', Routers.LessonsRouter);
-
+app.use('/api/user', Routers.UserRouter);
+app.use('/api/statics', Routers.StaticsRouter)
 
 
 // catch 404 and forward to error handler

@@ -6,5 +6,9 @@ module.exports = {
         return courses
     },
 
+    async getCourse (id) {
+        const courses = await Course.findById(id);
+        return courses
+    },
 
 }

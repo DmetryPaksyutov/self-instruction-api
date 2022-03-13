@@ -6,8 +6,6 @@ const LessonsRouter = express.Router();
 
 LessonsRouter.get('/course', LessonsControllers.getCourse);
 LessonsRouter.get('/authCourse', auth, LessonsControllers.getAuthCourse);
-
-LessonsRouter.get('/test', LessonsControllers.test);
-LessonsRouter.get('/createTestLessons', LessonsControllers.createTestLessons);
+LessonsRouter.get('/exercise', auth, LessonsControllers.getExercise);
 
 module.exports = LessonsRouter;

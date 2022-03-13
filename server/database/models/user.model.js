@@ -6,12 +6,10 @@ const UserSchema = new Schema({
     username : { type: String, require: true},
     hashedPassword : { type: String, require: true},
     email : { type: String, require: true},
-    avatarImg : Buffer,
-    courses : Array,
-    statistics : Array,
-    balls : { type: Number, require: true},
-    time : { type: Number, require: true},
-    lessons : { type: Number, require: true},
+    avatarImg : String,
+    courses : Object,
+    statistics : Object,
+    dictionary : Array,
 
 }, { versionKey: false });
 

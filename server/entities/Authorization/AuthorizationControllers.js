@@ -4,14 +4,6 @@ const User = require('../../database/models').User;
 const config = require('../../store/config');
 const generateServerCode = require('../../store/utils').generateServerCode;
 
-const nullData = {
-    avatar: '',
-    email: '',
-    id: '',
-    token: '',
-    username: '',
-}
-
 module.exports = {
     async registration (req, res) {
 
@@ -45,7 +37,7 @@ module.exports = {
                 );
             }
         } catch (e) {
-            generateServerCode(res, 500, nullData, e, 'что-то пошло не так');
+            generateServerCode(res, 500, null, e, 'что-то пошло не так');
         }
 
     },
@@ -56,17 +48,15 @@ module.exports = {
             const user = await User.findOne({email});
             if (user && user.email) {
 
-                //const isPasswordMatched = user.comparePassword(password);
                 const newHashed = sha256(password);
 
                 const isPasswordMatched = user.hashedPassword == newHashed && true;
-
                 if (isPasswordMatched) {
 
                     const token = jwt.sign({email, id: user[config.underscoreId]}, config.passport.secret, {
                         expiresIn: 1000000,
                     });
-                    //const userToReturn = { ...user.toJSON(), ...{ token } };
+                    console.log(`3 ${token}`);
                     const userToReturn = {
                         email: user.email,
                         username: user.username,
@@ -74,15 +64,13 @@ module.exports = {
                         id: user[config.underscoreId],
                         token,
                     }
-                    //delete userToReturn.hashedPassword;
-                    //res.status(200).json(userToReturn);
-                    await User.updateOne({email}, {status: true});
+
                     generateServerCode(res, 200, userToReturn)
                 } else {
                     generateServerCode(
                         res,
                         403,
-                        nullData,
+                        null,
                         'login password error',
                         'неверен логин или пароль',
                     );
@@ -91,13 +79,13 @@ module.exports = {
                 generateServerCode(
                     res,
                     403,
-                    nullData,
+                    null,
                     'login username error',
                     'неверен логин или пароль',
                 );
             }
         } catch (e) {
-            generateServerCode(res, 500, nullData, e, 'что-то пошло не так');
+            generateServerCode(res, 500, null, e, 'что-то пошло не так');
         }
 
     },
@@ -111,11 +99,11 @@ module.exports = {
                 avatar: user.avatar,
                 id: user.id,
             }
-            meData.avatar = readImage(user.avatar)
+            //meData.avatar = readImage(user.avatar)
             generateServerCode(res, 200, meData);
         }
         else {
-            generateServerCode(res, 500, nullData, req.err, 'что-то пошло не так');
+            generateServerCode(res, 500, null, req.err, 'что-то пошло не так');
         }
     },
 
@@ -125,44 +113,21 @@ module.exports = {
           generateServerCode(res, 200, {});
       }
       else {
-          generateServerCode(res, 500, nullData, req.err, 'что-то пошло не так');
+          generateServerCode(res, 500, null, req.err, 'что-то пошло не так');
         }
     },
 
 }
 
 const createUser = (username, email, password) => {
-    let now = new Date().toLocaleString().slice(0, 10)
-
     let data = {
         username,
         email,
         hashedPassword : sha256(password),
         avatar : '',
-        courses : [],
-        statistics : [],
-        points : 0,
-        time : 0,
-        lessons : 0,
+        courses : {},
+        statistics : {},
+        dictionary : [],
     }
     return new User(data).save();
-}
-
-const updateInfo = async (req, res, queryType) => {
-    const queryData = req.body[queryType]
-    if (!queryData) {
-        generateServerCode(res, 400, null, 'not query', 'нет параметра');
-    }
-    else {
-        try {
-            const user = await User.findById(req.user.id);
-            const newInfo = user.info;
-            newInfo[queryType] = queryData;
-            await User.updateOne({username : req.user.username}, {info : newInfo});
-            generateServerCode(res, 200, null);
-        }
-        catch (err) {
-            generateServerCode(res, 500, null, err, 'что-то пошло не так');
-        }
-    }
 }
